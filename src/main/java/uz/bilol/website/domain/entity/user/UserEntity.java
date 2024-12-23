@@ -13,6 +13,7 @@ import uz.bilol.website.domain.entity.BaseEntity;
 @Getter
 @Setter
 public class UserEntity extends BaseEntity {
+    // NMA GAAAAPPPP!!!
     private String username;
     private String name;
     private String lastName;
