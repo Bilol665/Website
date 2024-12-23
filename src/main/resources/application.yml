@@ -1,0 +1,43 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: WebSite
+  thymeleaf:
+    check-template-location: false
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: rentmanagement.teenagers@gmail.com
+    password: esbhggiatjdqhhzx
+    properties:
+      mjaail:
+        smtp:
+          auth: true
+      mail:
+        smtp:
+          starttls:
+            enable: true
+
+  datasource:
+    username: postgres
+    password: 0890
+    url: jdbc:postgresql://localhost:5432/web_site
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    show-sql: false
+
+jwt:
+  secret:
+    key:  753778214125442A472D4B6150645367566B59703373367639792F423F452848
+  access:
+    expiry: 30000000
+  refresh:
+    expiry: 30000000
