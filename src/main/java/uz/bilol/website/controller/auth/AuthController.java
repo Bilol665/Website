@@ -17,7 +17,6 @@ public class AuthController {
     }
     @GetMapping("/test/security")
     public ResponseEntity<String> security() {
-
-        return ResponseEntity.ok("Hello Security!");
+        return ResponseEntity.ok("It won't work!");
     }
 }
