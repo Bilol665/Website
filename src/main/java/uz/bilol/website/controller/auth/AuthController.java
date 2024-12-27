@@ -17,6 +17,7 @@ public class AuthController {
     }
     @GetMapping("/test/security")
     public ResponseEntity<String> security() {
+
         return ResponseEntity.ok("Hello Security!");
     }
 }
