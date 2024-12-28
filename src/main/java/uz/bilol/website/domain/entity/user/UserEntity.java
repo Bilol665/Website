@@ -22,7 +22,7 @@ import java.util.List;
 @Builder
 public class UserEntity extends BaseEntity implements UserDetails {
     private String username;
-    private String name;
+    private String firstname;
     private String lastName;
     private String email;
     private String password;

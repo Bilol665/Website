@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import uz.bilol.website.filter.JwtFilterToken;
@@ -25,13 +26,14 @@ public class SecurityConfig {
     private final JwtService jwtService;
     private final UserService userService;
     private final AuthenticationService authenticationService;
+    private final PasswordEncoder passwordEncoder;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requestConfigurer) ->
                         requestConfigurer
-                                .requestMatchers("/user/api/v1/auth/test").permitAll()
+                                .requestMatchers("/user/api/v1/auth/signup").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -44,7 +46,8 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(HttpSecurity httpSecurity) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder
                 = httpSecurity.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(userService);
+        authenticationManagerBuilder.userDetailsService(userService)
+                .passwordEncoder(passwordEncoder);
         return authenticationManagerBuilder.build();
     }
 }
