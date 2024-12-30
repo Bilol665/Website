@@ -2,12 +2,11 @@ package uz.bilol.website.controller.auth;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import uz.bilol.website.domain.dto.response.ApiResponse;
+import uz.bilol.website.domain.dto.user.LoginDto;
 import uz.bilol.website.domain.dto.user.UserCreateDto;
 import uz.bilol.website.service.user.UserService;
 
@@ -34,5 +33,17 @@ public class AuthController {
             return new ResponseEntity<>(response, response.getStatus());
         }
         return ResponseEntity.ok(userService.saveUser(user));
+    }
+    @GetMapping("/login")
+    public ResponseEntity<ApiResponse> login(
+            @Valid @RequestBody LoginDto loginDto,
+            BindingResult bindingResult
+    ) {
+        if (bindingResult.hasErrors()) {
+            ApiResponse response = ApiResponse.create(bindingResult);
+            return new ResponseEntity<>(response, response.getStatus());
+        }
+        ApiResponse response = userService.login(loginDto);
+        return new ResponseEntity<>(response, response.getStatus());
     }
 }
