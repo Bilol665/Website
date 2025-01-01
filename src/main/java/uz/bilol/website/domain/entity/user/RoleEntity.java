@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 public class RoleEntity extends BaseEntity {
     @Column(nullable = false, unique = true)
-    private String role;
+    private String name;
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.DETACH)
     private List<PermissionEntity> permissions;
 }
