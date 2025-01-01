@@ -36,7 +36,7 @@ public class UserEntity extends BaseEntity implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
-        roles.forEach((role) -> authorities.add(new SimpleGrantedAuthority(role.getRole())));
+        roles.forEach((role) -> authorities.add(new SimpleGrantedAuthority(role.getName())));
         List<PermissionEntity> userPermissions = new ArrayList<>();
         roles.forEach((roleEntity -> userPermissions.addAll(roleEntity.getPermissions())));
         userPermissions.forEach((permissionEntity -> authorities.add(new SimpleGrantedAuthority(permissionEntity.getName()))));

@@ -1,6 +1,5 @@
 package uz.bilol.website.service.user;
 
-import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -11,13 +10,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.bilol.website.domain.dto.response.ApiResponse;
 import uz.bilol.website.domain.dto.response.JwtResponse;
+import uz.bilol.website.domain.dto.response.UserCreationResponse;
 import uz.bilol.website.domain.dto.user.LoginDto;
 import uz.bilol.website.domain.dto.user.UserCreateDto;
+import uz.bilol.website.domain.entity.user.RoleEntity;
 import uz.bilol.website.domain.entity.user.UserEntity;
 import uz.bilol.website.domain.entity.user.UserState;
 import uz.bilol.website.exception.DataNotFoundException;
+import uz.bilol.website.repository.user.RoleRepository;
 import uz.bilol.website.repository.user.UserRepository;
 
+import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -27,6 +31,7 @@ public class UserService implements UserDetailsService {
     private static final String EMAIL_REGEX = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -40,12 +45,15 @@ public class UserService implements UserDetailsService {
         UserEntity mappedUser = modelMapper.map(user, UserEntity.class);
         mappedUser.setPassword(passwordEncoder.encode(user.getPassword()));
         mappedUser.setState(UserState.UNVERIFIED);
+        RoleEntity userRole = roleRepository.findByName("ROLE_USER");
+        mappedUser.setRoles(List.of(userRole));
         UserEntity savedUser = userRepository.save(mappedUser);
+        UserCreationResponse response = modelMapper.map(savedUser, UserCreationResponse.class);
         return ApiResponse.builder()
                 .message("All good")
                 .status(HttpStatus.OK)
                 .success(true)
-                .data(savedUser)
+                .data(response)
                 .build();
     }
 
@@ -146,5 +154,23 @@ public class UserService implements UserDetailsService {
                     .build();
         }
 
+    }
+
+    public ApiResponse updateEmail(String email, Principal principal) {
+        UserEntity userEntity = userRepository.findUserEntityByUsername(principal.getName()).get();
+        if(userEntity.getEmail().equals(email)) {
+            return ApiResponse.builder()
+                    .message("Emails are same!")
+                    .status(HttpStatus.CONFLICT)
+                    .success(false)
+                    .build();
+        }
+        userEntity.setEmail(email);
+        userRepository.save(userEntity);
+        return ApiResponse.builder()
+                .status(HttpStatus.OK)
+                .success(true)
+                .message("Email updated!")
+                .build();
     }
 }
