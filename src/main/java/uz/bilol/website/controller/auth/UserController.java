@@ -39,4 +39,5 @@ public class UserController {
         ApiResponse response = userService.updateEmail(email, principal);
         return new ResponseEntity<>(response, response.getStatus());
     }
+
 }
